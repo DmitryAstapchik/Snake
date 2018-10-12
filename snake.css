@@ -1,0 +1,76 @@
+﻿div {
+    transition: background-color 0.4s;
+}
+
+.field {
+    background-color: black;
+    box-shadow: black 0 0 15px 3px;
+    margin: 0 auto;
+    vertical-align: middle;
+}
+
+.line {
+    clear: both;
+}
+
+div[class*='_'] {
+    border: solid darkgray;
+    float: left;
+    background-color: gray;
+}
+
+div.snake {
+    background-color: whitesmoke;
+}
+
+div.head {
+    background-color: white;
+}
+
+div.food {
+    background-color: greenyellow;
+    animation: blink 1s infinite ease-in-out;
+}
+
+h1 {
+    text-align: center;
+    font-family: Courier New, Courier, monospace;
+    font-size: 50px;
+    text-shadow: black 0 0 3px;
+}
+
+.game-over {
+    text-align: center;
+    display: none;
+    position: absolute;
+    top: 200px;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    width: 100%;
+    left: 0;
+    opacity: 0.8;
+    text-shadow: black 5px 5px 10px;
+    color: red;
+}
+
+h1 + h1 {
+    font-size: 100px;
+}
+
+h2.game-over {
+    top: 320px;
+    font-size: 50px;
+}
+
+@keyframes blink {
+    from {
+        box-shadow: none;
+    }
+
+    50% {
+        box-shadow: greenyellow 0 0 10px 3px;
+    }
+
+    to {
+        box-shadow: none;
+    }
+}
