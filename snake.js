@@ -6,7 +6,7 @@ class Cell {
 }
 
 class Snake {
-    constructor(length = 5, fieldSize = 10) {
+    constructor(fieldSize, length = 5) {
         this.length = length;
         this.direction = 'right';
         this.fieldSize = fieldSize;
@@ -96,9 +96,9 @@ class Snake {
 }
 
 class Food {
-    constructor(fieldSize, snakeCoordinates) {
+    constructor(fieldSize, snakeCells) {
         this.fieldSize = fieldSize;
-        this.snakeCoordinates = snakeCoordinates;
+        this.snakeCells = snakeCells;
     }
 
     appear() {
@@ -106,8 +106,8 @@ class Food {
             var ok = true;
             this.line = Math.round(Math.random() * 10 % (this.fieldSize - 1));
             this.column = Math.round(Math.random() * 10 % (this.fieldSize - 1));
-            for (var i = 0; i < this.snakeCoordinates.length; i++) {
-                if (this.snakeCoordinates[i].line === this.line && this.snakeCoordinates[i].column === this.column) {
+            for (var i = 0; i < this.snakeCells.length; i++) {
+                if (this.snakeCells[i].line === this.line && this.snakeCells[i].column === this.column) {
                     ok = false;
                 }
             }
@@ -156,7 +156,7 @@ class GameField {
 
 const gameField = new GameField(10, 30);
 gameField.render();
-const snake = new Snake(5, gameField.size);
+const snake = new Snake(gameField.size);
 let food = new Food(gameField.size, snake.cells);
 food.appear();
 let timer = setInterval(function () {
