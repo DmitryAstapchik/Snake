@@ -14,56 +14,56 @@ class Snake {
         for (var i = 0; i < length; i++) {
             this.cells.push(new Cell(0, - (i + 1)));
         }
-        this.foodEaten = 0;
+        this.eatenFoodCount = 0;
 
         document.body.onkeydown = function (e) {
             switch (e.keyCode) {
                 case 37:
-                    if (this.direction === 'right') {
-                        break;
+                    if (this.direction !== 'right') {
+                        this.direction = 'left';
                     }
-                    this.direction = 'left';
                     break;
                 case 38:
-                    if (this.direction === 'down') {
-                        break;
+                    if (this.direction !== 'down') {
+                        this.direction = 'up';
                     }
-                    this.direction = 'up';
                     break;
                 case 39:
-                    if (this.direction === 'left') {
-                        break;
+                    if (this.direction !== 'left') {
+                        this.direction = 'right';
                     }
-                    this.direction = 'right';
                     break;
                 case 40:
-                    if (this.direction === 'up') {
-                        break;
+                    if (this.direction !== 'up') {
+                        this.direction = 'down';
                     }
-                    this.direction = 'down';
                     break;
             }
         }.bind(this);
     }
 
     moveHead() {
-        var newHeadCell;
+        var newHeadCell, newCell;
         switch (this.direction) {
             case 'right':
-                newHeadCell = document.getElementsByClassName(this.cells[0].line + '_' + (this.cells[0].column + 1 >= this.fieldSize ? 0 : this.cells[0].column + 1))[0];
-                this.cells.unshift(new Cell(this.cells[0].line, this.cells[0].column + 1 >= this.fieldSize ? 0 : this.cells[0].column + 1));
+                newCell = new Cell(this.cells[0].line, this.cells[0].column + 1 >= this.fieldSize ? 0 : this.cells[0].column + 1);
+                this.cells.unshift(newCell);
+                newHeadCell = document.getElementsByClassName(newCell.line + '_' + newCell.column)[0];
                 break;
             case 'left':
-                newHeadCell = document.getElementsByClassName(this.cells[0].line + '_' + (this.cells[0].column - 1 < 0 ? this.fieldSize - 1 : this.cells[0].column - 1))[0];
-                this.cells.unshift(new Cell(this.cells[0].line, this.cells[0].column - 1 < 0 ? this.fieldSize - 1 : this.cells[0].column - 1));
+                newCell = new Cell(this.cells[0].line, this.cells[0].column - 1 < 0 ? this.fieldSize - 1 : this.cells[0].column - 1);
+                this.cells.unshift(newCell);
+                newHeadCell = document.getElementsByClassName(newCell.line + '_' + newCell.column)[0];
                 break;
             case 'up':
-                newHeadCell = document.getElementsByClassName((this.cells[0].line - 1 < 0 ? this.fieldSize - 1 : this.cells[0].line - 1) + '_' + this.cells[0].column)[0];
-                this.cells.unshift(new Cell(this.cells[0].line - 1 < 0 ? this.fieldSize - 1 : this.cells[0].line - 1, this.cells[0].column));
+                newCell = new Cell(this.cells[0].line - 1 < 0 ? this.fieldSize - 1 : this.cells[0].line - 1, this.cells[0].column);
+                this.cells.unshift(newCell);
+                newHeadCell = document.getElementsByClassName(newCell.line + '_' + newCell.column)[0];
                 break;
             case 'down':
-                newHeadCell = document.getElementsByClassName((this.cells[0].line + 1 >= this.fieldSize ? 0 : this.cells[0].line + 1) + '_' + this.cells[0].column)[0];
-                this.cells.unshift(new Cell(this.cells[0].line + 1 >= this.fieldSize ? 0 : this.cells[0].line + 1, this.cells[0].column));
+                newCell = new Cell(this.cells[0].line + 1 >= this.fieldSize ? 0 : this.cells[0].line + 1, this.cells[0].column);
+                this.cells.unshift(newCell);
+                newHeadCell = document.getElementsByClassName(newCell.line + '_' + newCell.column)[0];
                 break;
         }
         newHeadCell.classList.add('snake', 'head');
@@ -79,16 +79,14 @@ class Snake {
 
     eatFood() {
         document.getElementsByClassName('food')[0].classList.remove('food');
-        this.foodEaten++;
-        document.getElementsByTagName('h1')[0].innerHTML = 'Score:' + snake.foodEaten;
+        this.eatenFoodCount++;
+        document.getElementsByTagName('h1')[0].innerHTML = 'Score:' + snake.eatenFoodCount;
     }
 
-    get isCrossed() {
-        for (var i = 0; i < this.cells.length; i++) {
-            for (var j = i; j < this.cells.length; j++) {
-                if (i !== j && this.cells[i].line === this.cells[j].line && this.cells[i].column === this.cells[j].column) {
-                    return true;
-                }
+    get isLooped() {
+        for (var i = 1; i < this.cells.length; i++) {
+            if (this.cells[0].line === this.cells[i].line && this.cells[0].column === this.cells[i].column) {
+                return true;
             }
         }
         return false;
@@ -149,7 +147,7 @@ class GameField {
     }
 
     gameOver() {
-        document.getElementsByClassName('game-over')[1].innerHTML = 'Your score: ' + snake.foodEaten;
+        document.getElementsByClassName('game-over')[1].innerHTML = 'Your score: ' + snake.eatenFoodCount;
         Array.from(document.getElementsByClassName('game-over')).forEach(e => e.style.display = 'block');
     }
 }
@@ -161,7 +159,7 @@ let food = new Food(gameField.size, snake.cells);
 food.appear();
 let timer = setInterval(function () {
     snake.moveHead();
-    if (snake.isCrossed) {
+    if (snake.isLooped) {
         gameField.gameOver();
         clearInterval(timer);
     }
